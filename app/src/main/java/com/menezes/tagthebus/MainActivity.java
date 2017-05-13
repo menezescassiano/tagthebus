@@ -1,11 +1,17 @@
 package com.menezes.tagthebus;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,11 +22,15 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import com.menezes.tagthebus.camera.CameraActivity;
 import com.menezes.tagthebus.models.NearStation;
 import com.menezes.tagthebus.models.StationResponse;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import com.menezes.tagthebus.services.RetrofitClient;
 
 import static android.view.View.GONE;
@@ -35,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
     public ArrayList<String> stationsNames;
+    private static String STATION_ID = "STATION_ID";
     //private List<ClientInfo> clientInfos;
 
     @Override
@@ -43,8 +54,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         progressBar.setVisibility(VISIBLE);
-        getStationInfo();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            } else {
+                getStationInfo();
+            }
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getStationInfo();
+                } else {
+                    finish();
+                }
+                return;
+            }
+        }
     }
 
     private void getStationInfo() {
@@ -65,11 +95,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setStationsList(StationResponse stationResponse) {
+    private void setStationsList(final StationResponse stationResponse) {
         stationsNames = getStationsNames(stationResponse);
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, stationsNames);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                intent.putExtra(STATION_ID, stationResponse.getData().getNearstations().get(position).getId());
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<String> getStationsNames(StationResponse stationResponse) {
@@ -78,62 +116,6 @@ public class MainActivity extends AppCompatActivity {
             stations.add(station.getStreetName());
         }
         return stations;
-    }
-
-    private static final int FILE_SELECT_CODE = 0;
-
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), FILE_SELECT_CODE);
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case FILE_SELECT_CODE:
-                if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                        System.out.print(bitmap.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                 /*   // Get the Uri of the selected file
-                    String fpath = data.getDataString();
-                    Uri uri = data.getData();
-                    String fileName = Uri.parse(uri.toString()).getLastPathSegment();
-
-                    //File file = new File(uri.getPath());
-                    try {
-                        //FileInputStream fileInputStream = new FileInputStream(file);
-                        File file = File.createTempFile(fileName, null, getCacheDir());
-                        System.out.print(file.getPath());
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d("TAG", "File Uri: " + uri.toString());
-                    // Get the path
-                    //String path = FileUtils.getPath(this, uri);
-                   // Log.d("TAG", "File Path: " + path);
-                    // Get the file instance
-                    // File file = new File(path);
-                    // Initiate the upload*/
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }
