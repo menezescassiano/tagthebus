@@ -1,6 +1,6 @@
-package services;
+package com.menezes.tagthebus.services;
 
-import models.StationResponse;
+import com.menezes.tagthebus.models.StationResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

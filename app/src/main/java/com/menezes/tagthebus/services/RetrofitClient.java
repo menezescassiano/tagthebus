@@ -1,4 +1,4 @@
-package services;
+package com.menezes.tagthebus.services;
 
 import com.menezes.tagthebus.BuildConfig;
 

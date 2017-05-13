@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -14,16 +13,15 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import models.NearStation;
-import models.StationResponse;
+import com.menezes.tagthebus.models.NearStation;
+import com.menezes.tagthebus.models.StationResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import services.RetrofitClient;
+import com.menezes.tagthebus.services.RetrofitClient;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
