@@ -15,20 +15,23 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.menezes.tagthebus.utils.Constants.FOLDER_NAME;
+
 public class CameraActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri uriSavedImage;
     private String timeStamp;
-    private static String FOLDER_NAME = "TagTheBus";
     private String pictureId;
+    private String pictureName;
     private String fileFormat = ".png";
     private static String STATION_ID = "STATION_ID";
+    private static String STATION_NAME = "STATION_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pictureId = getIntent().getStringExtra(STATION_ID) + "_";
+        pictureName = getIntent().getStringExtra(STATION_NAME) + "_";
         dispatchTakePictureIntent();
     }
 
@@ -36,10 +39,10 @@ public class CameraActivity extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File imagesFolder = new File(Environment.getExternalStorageDirectory(), FOLDER_NAME);
+        File imagesFolder = new File(FOLDER_NAME);
         imagesFolder.mkdirs();
 
-        File image = new File(imagesFolder, pictureId + timeStamp + fileFormat);
+        File image = new File(imagesFolder, pictureName + timeStamp + fileFormat);
         uriSavedImage = Uri.fromFile(image);
 
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
@@ -52,19 +55,12 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            getThumbnail();
+            finish();
+            //getThumbnail();
             /*Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             System.out.println(imageBitmap.toString());
             ImageView.setImageBitmap(imageBitmap);*/
         }
-    }
-
-    private void getThumbnail() {
-        final int THUMBSIZE = 256;
-
-        Bitmap thumbnail = ThumbnailUtils.
-                extractThumbnail(BitmapFactory.decodeFile(uriSavedImage.getPath()), THUMBSIZE, THUMBSIZE);
-        System.out.println(thumbnail.toString());
     }
 }

@@ -1,13 +1,10 @@
-package com.menezes.tagthebus;
+package com.menezes.tagthebus.activity;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,12 +14,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import com.menezes.tagthebus.R;
 import com.menezes.tagthebus.camera.CameraActivity;
 import com.menezes.tagthebus.models.NearStation;
 import com.menezes.tagthebus.models.StationResponse;
@@ -46,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> stationsNames;
     private static String STATION_ID = "STATION_ID";
+    private static String STATION_NAME = "STATION_NAME";
     //private List<ClientInfo> clientInfos;
 
     @Override
@@ -103,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                Intent intent = new Intent(MainActivity.this, StationDetailActivity.class);
                 intent.putExtra(STATION_ID, stationResponse.getData().getNearstations().get(position).getId());
+                intent.putExtra(STATION_NAME, stationResponse.getData().getNearstations().get(position).getStreetName());
                 startActivity(intent);
             }
         });
