@@ -30,7 +30,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pictureName = getIntent().getStringExtra(STATION_NAME) + "_";
+        pictureName = getIntent().getStringExtra(STATION_NAME) + ":";
         dispatchTakePictureIntent();
     }
 
@@ -53,8 +53,7 @@ public class CameraActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            finish();
-        }
+        finish();
     }
+
 }

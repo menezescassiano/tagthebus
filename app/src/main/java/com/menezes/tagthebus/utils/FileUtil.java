@@ -18,7 +18,7 @@ import static com.menezes.tagthebus.utils.Constants.THUMBSIZE;
 public class FileUtil {
 
     public static void deleteSelectedFile(String fileName) {
-        String filePath = FOLDER_NAME + "/" + fileName;
+        String filePath = FOLDER_NAME + fileName;
         File file = new File(filePath);
         file.delete();
     }

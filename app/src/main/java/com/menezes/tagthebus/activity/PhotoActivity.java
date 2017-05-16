@@ -27,7 +27,7 @@ public class PhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         ButterKnife.inject(this);
-        filePath = filePath.concat("/" + getIntent().getStringExtra(FILE_PATH));
+        filePath = filePath.concat(getIntent().getStringExtra(FILE_PATH));
         loadPhoto();
 
     }

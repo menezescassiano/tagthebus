@@ -3,14 +3,11 @@ package com.menezes.tagthebus.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,7 +15,6 @@ import android.widget.ListView;
 import com.menezes.tagthebus.R;
 import com.menezes.tagthebus.adapter.ListAdapter;
 import com.menezes.tagthebus.camera.CameraActivity;
-import com.menezes.tagthebus.utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,10 +26,9 @@ import static com.menezes.tagthebus.utils.Constants.FILE_PATH;
 import static com.menezes.tagthebus.utils.Constants.FOLDER_NAME;
 import static com.menezes.tagthebus.utils.Constants.STATION_ID;
 import static com.menezes.tagthebus.utils.Constants.STATION_NAME;
-import static com.menezes.tagthebus.utils.Constants.THUMBSIZE;
-import static com.menezes.tagthebus.utils.FileUtil.*;
 import static com.menezes.tagthebus.utils.FileUtil.deleteSelectedFile;
 import static com.menezes.tagthebus.utils.FileUtil.getDevicePhotos;
+import static com.menezes.tagthebus.utils.FileUtil.getThumbnail;
 
 public class StationDetailActivity extends AppCompatActivity {
 
@@ -50,6 +45,9 @@ public class StationDetailActivity extends AppCompatActivity {
     @InjectView(R.id.stationPhotosList)
     ListView stationPhotosList;
 
+    @InjectView(R.id.camera_button)
+    FloatingActionButton cameraButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +57,7 @@ public class StationDetailActivity extends AppCompatActivity {
         stationId = getIntent().getStringExtra(STATION_ID);
         toolbar.setTitle(stationName);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.camera_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(StationDetailActivity.this, CameraActivity.class);
@@ -69,8 +66,8 @@ public class StationDetailActivity extends AppCompatActivity {
                 startActivityForResult(intent, PHOTO_RESULT);
             }
         });
-        File appFolder = new File(FOLDER_NAME);
-        findPhotos(appFolder);
+
+        findPhotos(new File(FOLDER_NAME));
         createList();
 
     }
@@ -84,7 +81,6 @@ public class StationDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(StationDetailActivity.this, PhotoActivity.class);
                 intent.putExtra(FILE_PATH, photosNamesArray.get(position));
                 startActivity(intent);
-                //Toast.makeText(StationDetailActivity.this, "You Clicked at " + photosNamesArray.get(position++), Toast.LENGTH_SHORT).show();
             }
         });
 

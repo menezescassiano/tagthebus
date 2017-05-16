@@ -8,7 +8,7 @@ import android.os.Environment;
 
 public class Constants {
 
-    public static final String FOLDER_NAME = Environment.getExternalStorageDirectory() + "/TagTheBus";
+    public static final String FOLDER_NAME = Environment.getExternalStorageDirectory() + "/TagTheBus/";
     public static String STATION_ID = "STATION_ID";
     public static String STATION_NAME = "STATION_NAME";
     public static String FILE_PATH = "FILE_PATH";

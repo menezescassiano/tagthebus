@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> stationsNames;
 
+    private String latitude = "41.3985182";
+    private String longitude = "2.1917991";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         progressBar.setVisibility(VISIBLE);
+        checkPermissions();
+
+    }
+
+    private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             } else {
                 getStationInfo();
             }
+        } else {
+            getStationInfo();
         }
     }
 
@@ -76,11 +86,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getStationInfo() {
-        Call<StationResponse> accountCall = new RetrofitClient().getModel().getStationsInfo("41.3985182", "2.1917991");
+        Call<StationResponse> accountCall = new RetrofitClient().getModel().getStationsInfo(latitude, longitude);
         accountCall.enqueue(new Callback<StationResponse>() {
             @Override
             public void onResponse(Call<StationResponse> call, Response<StationResponse> response) {
-                progressBar.setVisibility(GONE);
                 StationResponse stationResponse = response.body();
                 setStationsList(stationResponse);
             }
@@ -107,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        progressBar.setVisibility(GONE);
     }
 
     private ArrayList<String> getStationsNames(StationResponse stationResponse) {
