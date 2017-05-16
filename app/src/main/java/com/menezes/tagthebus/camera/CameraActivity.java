@@ -16,17 +16,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.menezes.tagthebus.utils.Constants.FOLDER_NAME;
+import static com.menezes.tagthebus.utils.Constants.STATION_NAME;
 
 public class CameraActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri uriSavedImage;
     private String timeStamp;
-    private String pictureId;
     private String pictureName;
     private String fileFormat = ".png";
-    private static String STATION_ID = "STATION_ID";
-    private static String STATION_NAME = "STATION_NAME";
+    private static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class CameraActivity extends AppCompatActivity {
     @SuppressLint("SimpleDateFormat")
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         File imagesFolder = new File(FOLDER_NAME);
         imagesFolder.mkdirs();
 
@@ -56,11 +55,6 @@ public class CameraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             finish();
-            //getThumbnail();
-            /*Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            System.out.println(imageBitmap.toString());
-            ImageView.setImageBitmap(imageBitmap);*/
         }
     }
 }

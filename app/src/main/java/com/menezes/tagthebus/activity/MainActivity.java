@@ -32,6 +32,8 @@ import com.menezes.tagthebus.services.RetrofitClient;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.menezes.tagthebus.utils.Constants.STATION_ID;
+import static com.menezes.tagthebus.utils.Constants.STATION_NAME;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,9 +44,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
     public ArrayList<String> stationsNames;
-    private static String STATION_ID = "STATION_ID";
-    private static String STATION_NAME = "STATION_NAME";
-    //private List<ClientInfo> clientInfos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

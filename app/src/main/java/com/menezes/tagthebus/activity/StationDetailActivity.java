@@ -15,49 +15,34 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.menezes.tagthebus.R;
-import com.menezes.tagthebus.adapter.CustomList;
+import com.menezes.tagthebus.adapter.ListAdapter;
 import com.menezes.tagthebus.camera.CameraActivity;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.menezes.tagthebus.utils.Constants.FOLDER_NAME;
+import static com.menezes.tagthebus.utils.Constants.STATION_ID;
+import static com.menezes.tagthebus.utils.Constants.STATION_NAME;
+import static com.menezes.tagthebus.utils.Constants.THUMBSIZE;
 
 public class StationDetailActivity extends AppCompatActivity {
 
     private static int PHOTO_RESULT = 1;
-    private static String STATION_NAME = "STATION_NAME";
-    private static String STATION_ID = "STATION_ID";
     private String stationId;
     private String stationName;
+    private ArrayList<Bitmap> thumbnailsArray = new ArrayList<>();
+    private ArrayList<String> photosNamesArray = new ArrayList<>();
+    private ListAdapter adapter;
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
     @InjectView(R.id.stationPhotosList)
     ListView stationPhotosList;
-
-    String[] web = {
-            "Google Plus",
-            "Twitter",
-            "Windows",
-            "Bing",
-            "Itunes",
-            "Wordpress",
-            "Drupal"
-    };
-    Integer[] imageId = {
-            //R.drawable.image1,
-            //R.drawable.image2,
-            //R.drawable.image3,
-            //R.drawable.image4,
-            //R.drawable.image5,
-            //R.drawable.image6,
-            //R.drawable.image7
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,20 +65,17 @@ public class StationDetailActivity extends AppCompatActivity {
         });
         File appFolder = new File(FOLDER_NAME);
         findPhotos(appFolder);
+        createList();
 
     }
 
     private void createList() {
-        CustomList adapter = new
-                CustomList(StationDetailActivity.this, web, imageId);
+        adapter = new ListAdapter(StationDetailActivity.this, photosNamesArray, thumbnailsArray);
         stationPhotosList.setAdapter(adapter);
         stationPhotosList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Toast.makeText(StationDetailActivity.this, "You Clicked at " + web[+position], Toast.LENGTH_SHORT).show();
-
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(StationDetailActivity.this, "You Clicked at " + photosNamesArray.get(position++), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -106,6 +88,7 @@ public class StationDetailActivity extends AppCompatActivity {
                 if (file.isDirectory()) {
                     findPhotos(file);
                 } else if (file.getName().contains(stationName)) {
+                    photosNamesArray.add(file.getName());
                     getThumbnail(file.getPath());
                     Log.d("FOUND_FILE::", file.getName());
 
@@ -115,17 +98,21 @@ public class StationDetailActivity extends AppCompatActivity {
     }
 
     private void getThumbnail(String pathName) {
-        final int THUMBSIZE = 256;
-
-        Bitmap thumbnail = ThumbnailUtils.
-                extractThumbnail(BitmapFactory.decodeFile(pathName), THUMBSIZE, THUMBSIZE);
+        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(pathName), THUMBSIZE, THUMBSIZE);
+        thumbnailsArray.add(thumbnail);
         Log.d("THUMBNAIL_PATH::", thumbnail.toString());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PHOTO_RESULT && resultCode == RESULT_OK) {
-
+        if (requestCode == PHOTO_RESULT/* && resultCode == RESULT_OK*/) {
+            File appFolder = new File(FOLDER_NAME);
+            photosNamesArray.clear();
+            thumbnailsArray.clear();
+            adapter.clear();
+            adapter.notifyDataSetChanged();
+            findPhotos(appFolder);
+            createList();
         }
     }
 

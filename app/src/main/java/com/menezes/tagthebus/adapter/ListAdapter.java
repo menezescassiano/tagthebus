@@ -1,6 +1,7 @@
 package com.menezes.tagthebus.adapter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +11,22 @@ import android.widget.TextView;
 
 import com.menezes.tagthebus.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by cassiano.menezes on 15/05/2017.
  */
 
-public class CustomList extends ArrayAdapter<String> {
+public class ListAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final String[] web;
-    private final Integer[] imageId;
-    public CustomList(Activity context, String[] web, Integer[] imageId) {
-        super(context, R.layout.station_list_item, web);
+    private final ArrayList<Bitmap> thumbnails;
+    private final ArrayList<String> photosNames;
+    public ListAdapter(Activity context, ArrayList<String> photosNames, ArrayList<Bitmap> thumbnails) {
+        super(context, R.layout.station_list_item, photosNames);
         this.context = context;
-        this.web = web;
-        this.imageId = imageId;
+        this.thumbnails = thumbnails;
+        this.photosNames = photosNames;
 
     }
     @Override
@@ -33,9 +36,8 @@ public class CustomList extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
-        txtTitle.setText(web[position]);
-
-        imageView.setImageResource(imageId[position]);
+        txtTitle.setText(photosNames.get(position));
+        imageView.setImageBitmap(thumbnails.get(position));
         return rowView;
     }
 }
