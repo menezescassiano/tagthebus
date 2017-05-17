@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> stationsNames;
 
+    //this is hardcoded to ensure we all can test the same location
     private String latitude = "41.3985182";
     private String longitude = "2.1917991";
 

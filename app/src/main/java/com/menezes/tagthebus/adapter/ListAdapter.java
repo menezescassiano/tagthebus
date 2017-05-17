@@ -53,7 +53,14 @@ public class ListAdapter extends ArrayAdapter<String> {
     private void setDateAndTime(String photoName){
         String[] strSplit = photoName.split(":");
         String[] strSplitDate = strSplit[1].split("_");
-        date = strSplitDate[0];
-        time = strSplitDate[1];
+
+        String strYear = strSplitDate[0].substring(0,4);
+        String strMonth = strSplitDate[0].substring(4,6);
+        String strDay = strSplitDate[0].substring(6,8);
+        date = strDay + "/" + strMonth + "/" + strYear;
+
+        String strHour = strSplitDate[1].substring(0,2);
+        String strMin = strSplitDate[1].substring(2,4);
+        time = strHour + "h" + strMin + "min";
     }
 }
