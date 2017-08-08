@@ -26,8 +26,7 @@
         </activity>
         <activity
             android:name=".activity.StationDetailActivity"
-            android:label="@string/title_activity_station_detail"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_station_detail">
         </activity>
         <activity android:name=".activity.PhotoActivity">
         </activity>
